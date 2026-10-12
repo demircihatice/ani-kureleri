@@ -1,0 +1,33 @@
+{
+  "expo": {
+    "name": "Anı Küreleri",
+    "slug": "ani-kureleri",
+    "scheme": "anikureleri",
+    "plugins": [
+      "expo-router",
+      ["expo-image-picker", { "photosPermission": "Anılarına fotoğraf eklemek için seçtiğin fotoğraflara erişim gerekir.", "cameraPermission": false, "microphonePermission": false }],
+      "@react-native-community/datetimepicker"
+    ],
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single",
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}

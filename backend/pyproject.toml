@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ani-kureleri-backend"
+version = "0.1.0"
+description = "Anı Küreleri FastAPI ve Supabase JWT doğrulama altyapısı"
+requires-python = ">=3.12"
+dependencies = [
+  "fastapi==0.143.0",
+  "uvicorn==0.54.0",
+  "pydantic==2.14.0",
+  "pydantic-settings==2.15.0",
+  "httpx==0.28.1",
+  "PyJWT==2.15.1",
+  "cryptography==50.0.2",
+  "SQLAlchemy[asyncio]==2.0.54",
+  "asyncpg==0.32.0",
+  "alembic==1.20.0",
+]
+
+[project.optional-dependencies]
+test = ["pytest==9.1.1", "pytest-asyncio==1.4.0"]
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+markers = ["integration: gerçek PostgreSQL üzerinde salt okunur kontroller"]
