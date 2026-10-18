@@ -8,6 +8,20 @@ export class AniKayitHatasi extends Error {
   constructor(mesaj: string, public belirsiz: boolean) { super(mesaj); }
 }
 
+// Yeni arayüzde yalnızca metin/tarih düzenlenir; duygu ve sphere_id değişmez.
+export async function aniBilgileriniGuncelle(kullaniciId: string, aniId: string,
+  form: Omit<AniDuzenleme, 'kureId'>): Promise<AniGuncellenen> {
+  if (!kullaniciId || !aniId) throw new Error('Giriş ve anı kimliği gerekli.');
+  const hata = aniDuzenlemesiniDogrula({ ...form, kureId: 'koru' }, ['koru']);
+  if (hata) throw new Error(hata);
+  const { data, error } = await supabaseIstemcisiniAl().from('memories')
+    .update({ title: form.baslik.trim(), description: form.aciklama.trim() || null, memory_date: form.tarih })
+    .eq('id', aniId).eq('user_id', kullaniciId)
+    .select('id, title, description, memory_date, sphere_id').returns<AniGuncellenen[]>().single();
+  if (error || !data) throw new Error('Değişiklikler doğrulanamadı. Anıyı yenileyip tekrar dene.');
+  return data;
+}
+
 export async function aniDetayiniGetir(kullaniciId: string, aniId: string, sinyal: AbortSignal): Promise<AniDetayi> {
   if (!kullaniciId || !aniId) throw new Error('Giriş ve anı kimliği gerekli.');
   const istemci = supabaseIstemcisiniAl();

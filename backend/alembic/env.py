@@ -13,6 +13,8 @@ def configure(connection=None):
     context.configure(
         connection=connection,
         dialect_name='postgresql',
+        # Offline SQL'de RAISE NOTICE yüzde işaretleri pyformat ile ikiye katlanmasın.
+        dialect_opts={'paramstyle': 'named'},
         target_metadata=None,
         include_schemas=True,
         include_name=include_name,

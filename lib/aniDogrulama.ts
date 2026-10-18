@@ -11,10 +11,18 @@ export function tarihGecerliMi(metin: string): boolean {
   return !Number.isNaN(tarih.getTime()) && yerelTarih(tarih) === metin;
 }
 
+export function yeniAniTarihiniDogrula(metin: string, bugun = new Date()): string | null {
+  if (!tarihGecerliMi(metin)) return 'Geçerli bir anı tarihi seç.';
+  // ISO UTC dönüşümü kullanılmaz; cihazın yerel takvim günü karşılaştırılır.
+  if (metin > yerelTarih(bugun)) return 'Anı tarihi bugünden sonra olamaz.';
+  return null;
+}
+
 export function aniDuzenlemesiniDogrula(form: AniDuzenleme, kureKimlikleri: string[]): string | null {
   if (!form.baslik.trim() || form.baslik.trim().length > 200) return 'Başlık 1–200 karakter olmalı.';
   if (form.aciklama.length > 5000) return 'Açıklama en fazla 5000 karakter olabilir.';
-  if (!tarihGecerliMi(form.tarih)) return 'Geçerli bir anı tarihi seç.';
+  const tarihHatasi = yeniAniTarihiniDogrula(form.tarih);
+  if (tarihHatasi) return tarihHatasi;
   if (!kureKimlikleri.includes(form.kureId)) return 'Sana ait bir duygu küresi seç.';
   return null;
 }

@@ -43,7 +43,8 @@ def engine_olustur(ayarlar: Ayarlar, *, migration: bool = False):
         secenekler['poolclass'] = NullPool
     else:
         secenekler.update(pool_size=ayarlar.database_pool_size, max_overflow=0,
-                          pool_timeout=10, pool_pre_ping=True, pool_reset_on_return='rollback')
+                          pool_timeout=10, pool_pre_ping=True, pool_reset_on_return='rollback',
+                          isolation_level='READ COMMITTED')
     # Cache kapatmak asyncpg'nin prepare() çağrısını kaldırmaz: transaction pooler yasak.
     return create_async_engine(url, **secenekler)
 

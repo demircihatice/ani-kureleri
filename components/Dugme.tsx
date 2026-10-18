@@ -22,7 +22,7 @@ export function Dugme({ baslik, tiklaninca, bekliyor = false, ikincil = false, d
 }
 
 const stiller = StyleSheet.create({
-  dugme: { minHeight: 50, padding: 14, borderRadius: 16, backgroundColor: RENKLER.yazi, alignItems: 'center', justifyContent: 'center' },
-  ikincil: { backgroundColor: '#EAE4EF' },
+  dugme: { minHeight: 52, padding: 14, borderRadius: 18, backgroundColor: RENKLER.ana, alignItems: 'center', justifyContent: 'center' },
+  ikincil: { backgroundColor: RENKLER.yumusak },
   yazi: { color: '#FFFFFF', fontSize: 16, fontWeight: '600' },
 });

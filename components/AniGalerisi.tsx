@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 import type { AniDetayi } from '../types/ani';
 import { RENKLER } from '../constants/tema';
@@ -13,10 +13,13 @@ function GaleriFotografi({ url, sira, genislik }: { url: string | null; sira: nu
   </View>;
 }
 
-export function AniGalerisi({ fotograflar }: { fotograflar: AniDetayi['fotograflar'] }) {
+export function AniGalerisi({ fotograflar, secili = 0, degistir }: { fotograflar: AniDetayi['fotograflar']; secili?: number; degistir?: (sira: number) => void }) {
   const [genislik, ayarla] = useState(0);
+  const kaydirici = useRef<ScrollView>(null);
+  useEffect(() => { if (genislik > 0) kaydirici.current?.scrollTo({ x: secili * genislik, animated: false }); }, [secili, genislik]);
   return <View onLayout={(olay) => ayarla(olay.nativeEvent.layout.width)} style={{ gap: 10 }}>
-    {genislik > 0 && <ScrollView horizontal pagingEnabled showsHorizontalScrollIndicator={fotograflar.length > 1}>
+    {genislik > 0 && <ScrollView ref={kaydirici} horizontal pagingEnabled showsHorizontalScrollIndicator={fotograflar.length > 1}
+      onMomentumScrollEnd={(olay) => degistir?.(Math.max(0, Math.min(fotograflar.length - 1, Math.round(olay.nativeEvent.contentOffset.x / genislik))))}>
       {fotograflar.map((fotograf, sira) => <GaleriFotografi key={`${fotograf.yol}-${fotograf.url}`}
         url={fotograf.url} sira={sira} genislik={genislik} />)}
     </ScrollView>}
@@ -24,7 +27,7 @@ export function AniGalerisi({ fotograflar }: { fotograflar: AniDetayi['fotografl
   </View>;
 }
 const stiller = StyleSheet.create({
-  fotograf: { width: '100%', aspectRatio: 1, borderRadius: 20, backgroundColor: '#EAE4EF' },
+  fotograf: { width: '100%', aspectRatio: 1, borderRadius: 24, backgroundColor: RENKLER.yumusak },
   yedek: { padding: 24, alignItems: 'center', justifyContent: 'center' },
   metin: { color: RENKLER.ikincil, lineHeight: 22 },
 });
