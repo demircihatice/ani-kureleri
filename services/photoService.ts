@@ -5,22 +5,23 @@ import { Platform } from 'react-native';
 import { EN_FAZLA_FOTOGRAF, EN_FAZLA_FOTOGRAF_BOYUTU } from '../constants/ani';
 import type { SecilenFotograf } from '../types/ani';
 
-export async function galeridenSec(): Promise<SecilenFotograf[] | null> {
+export async function galeridenSec(kalan = EN_FAZLA_FOTOGRAF): Promise<SecilenFotograf[] | null> {
+  if (!Number.isInteger(kalan) || kalan < 1 || kalan > EN_FAZLA_FOTOGRAF) throw new Error('Fotoğraf sınırı geçersiz.');
   // Sistem fotoğraf seçicisi yalnızca kullanıcının seçtiği fotoğrafları açar.
   const sonuc = await ImagePicker.launchImageLibraryAsync({
     mediaTypes: ['images'], allowsMultipleSelection: true,
-    selectionLimit: EN_FAZLA_FOTOGRAF, allowsEditing: false, quality: 1,
+    selectionLimit: kalan, allowsEditing: false, quality: 1,
   });
   if (sonuc.canceled) return null;
-  if (sonuc.assets.length > EN_FAZLA_FOTOGRAF) throw new Error('En fazla 5 fotoğraf seçebilirsin.');
+  if (sonuc.assets.length > kalan) throw new Error(`En fazla ${kalan} fotoğraf daha seçebilirsin.`);
   return sonuc.assets.map(({ uri, width, height }) => ({ uri, width, height }));
 }
 
-export async function fotografiHazirla(fotograf: SecilenFotograf): Promise<ArrayBuffer> {
+export async function fotografiHazirla(fotograf: SecilenFotograf, enBuyukKenar = 1600): Promise<ArrayBuffer> {
   const baglam = ImageManipulator.manipulate(fotograf.uri);
   try {
-    if (Math.max(fotograf.width, fotograf.height) > 1600) {
-      baglam.resize(fotograf.width >= fotograf.height ? { width: 1600 } : { height: 1600 });
+    if (Math.max(fotograf.width, fotograf.height) > enBuyukKenar) {
+      baglam.resize(fotograf.width >= fotograf.height ? { width: enBuyukKenar } : { height: enBuyukKenar });
     }
     const resim = await baglam.renderAsync();
     try {

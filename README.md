@@ -1,1 +1,1 @@
-Geliştirilme aşamasında
+﻿Mobil uygulama geliştirme ve veritabanı işlemleri yeterli düzeyde tamamlanmış olup 6. hafta itibari ile duygu sınıflandırma modeline geçiş yapılacaktır.

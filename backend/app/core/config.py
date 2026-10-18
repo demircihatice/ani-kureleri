@@ -26,6 +26,7 @@ class Ayarlar(BaseSettings):
     database_connection_mode: Literal['direct', 'session'] = 'session'
     database_ssl_ca_file: str | None = None
     database_pool_size: int = Field(default=2, ge=1, le=10)
+    analysis_simulation_enabled: bool = False
     db_check_enabled: bool = False
     alembic_baseline_confirmed: bool = False
 

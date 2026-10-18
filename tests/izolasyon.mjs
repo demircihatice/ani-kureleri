@@ -106,6 +106,6 @@ try {
   for(const tablo of tablolar)kontrol((await sql(`select count(*)::int as n from public.${tablo}`)).rows[0].n===(tablo==='spheres' ? 6 : 2),'Saldırılar verileri değiştirmedi: '+tablo);
   kontrol((await sql('select count(*)::int as n from storage.objects')).rows[0].n===2,'Asıl dosyalar korundu');
   // Panel kontrol dosyasındaki sorgular da mevcut migration şemasında geçerli olmalı.
-  await db.exec(await readFile(new URL('../supabase/asama9_kontrol.sql',import.meta.url),'utf8'));
+  await db.exec(await readFile(new URL('../backend/sql/rls_audit.sql',import.meta.url),'utf8'));
   console.log(`Aşama 9: ${sayi} bütünleşik izolasyon kontrolü geçti; iki yerel test kullanıcısı. Canlı Supabase testi değildir.`);
 } finally { await db.close(); }

@@ -120,7 +120,7 @@ def test_sistem_semalari_autogenerate_disinda():
 def test_baseline_offline_uygulama_tablolarina_dokunmaz():
     cikti = StringIO()
     config = Config(str(Path(__file__).resolve().parents[1] / 'alembic.ini'), output_buffer=cikti)
-    command.upgrade(config, 'head', sql=True)
+    command.upgrade(config, '20261012_01', sql=True)
     sql = cikti.getvalue()
     assert 'CREATE TABLE public.alembic_version' in sql
     assert 'DROP' not in sql

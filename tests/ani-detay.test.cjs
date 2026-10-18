@@ -69,6 +69,16 @@ test('Boş açıklama null kaydedilir; fotoğraf ve Storage değişikliği yapı
   const s=ortam();await s.aniyiGuncelle('user-a','ani-a',{...form,aciklama:'  '},['nostalji-a']);
   assert.equal(JSON.parse(s.istekler[0].options.body).description,null);assert.equal(s.istekler.length,1);
 });
+
+test('Yeni detay düzenlemesi sphere_id veya AI alanı göndermeden yalnızca metin ve tarihi günceller',async()=>{
+  const s=ortam();
+  await s.aniBilgileriniGuncelle('user-a','ani-a',form);
+  assert.equal(s.istekler.length,1);
+  const {adres,options}=s.istekler[0];
+  assert.equal(adres.searchParams.get('user_id'),'eq.user-a');
+  assert.equal(adres.searchParams.get('id'),'eq.ani-a');
+  assert.deepEqual(JSON.parse(options.body),{title:'Yeni başlık',description:'Açıklama',memory_date:'2024-02-29'});
+});
 test('Sıfır satır, RLS reddi ve ağ hatası başarı olarak kabul edilmez',async()=>{
   for(const [code,mesaj] of [['PGRST116',/hesabına ait değil/],['42501',/düzenleyemezsin/],['',/doğrulanamadı/]]) {
     const s=ortam({hata:{code,message:'failed'}});

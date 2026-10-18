@@ -1,16 +1,19 @@
 import { useRef, useState } from 'react';
 import { Link } from 'expo-router';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
-import { RENKLER } from '../constants/tema';
+import { RENKLER, ORTAK } from '../constants/tema';
 import { authHataMesaji, girisBilgileriniDogrula, kayitBilgileriniDogrula } from '../lib/authDogrulama';
 import { girisYap, kayitOl } from '../services/authService';
 import { Dugme } from './Dugme';
 import { Sayfa } from './Sayfa';
+import { AnaKure } from './ui/AnaKure';
+import { SifreAlani } from './SifreAlani';
 
 export function AuthFormu({ kayit = false }: { kayit?: boolean }) {
   const [adSoyad, adSoyadAyarla] = useState('');
   const [eposta, epostaAyarla] = useState('');
   const [sifre, sifreAyarla] = useState('');
+  const [sifreTekrar, sifreTekrarAyarla] = useState('');
   const [bekliyor, bekliyorAyarla] = useState(false);
   const [hata, hataAyarla] = useState<string | null>(null);
   const [dogrulama, dogrulamaAyarla] = useState(false);
@@ -22,6 +25,7 @@ export function AuthFormu({ kayit = false }: { kayit?: boolean }) {
     const sorun = kayit ? kayitBilgileriniDogrula(bilgiler) : girisBilgileriniDogrula(bilgiler);
     hataAyarla(sorun);
     if (sorun) return;
+    if (kayit && sifre !== sifreTekrar) { hataAyarla('Şifreler eşleşmiyor.'); return; }
     istekSuruyor.current = true;
     bekliyorAyarla(true);
     try {
@@ -32,6 +36,7 @@ export function AuthFormu({ kayit = false }: { kayit?: boolean }) {
         await girisYap(bilgiler);
       }
       sifreAyarla('');
+      sifreTekrarAyarla('');
       // Yönlendirmeyi tek oturum dinleyicisi ve korumalı rotalar yönetir.
     } catch (sorun) {
       hataAyarla(authHataMesaji(sorun));
@@ -54,10 +59,10 @@ export function AuthFormu({ kayit = false }: { kayit?: boolean }) {
   );
 
   return (
-    <Sayfa>
-      <Text style={stiller.marka}>Anı Küreleri</Text>
-      <Text accessibilityRole="header" style={stiller.baslik}>{kayit ? 'Anılarına bir yer aç' : 'Yeniden hoş geldin'}</Text>
-      <Text style={stiller.aciklama}>{kayit ? 'Hesabını oluştur, hikâyene başla.' : 'Anılarına ulaşmak için giriş yap.'}</Text>
+    <Sayfa ortala>
+      <AnaKure />
+      <Text style={stiller.marka}>Anı Küresi</Text>
+      <Text accessibilityRole="header" style={stiller.baslik}>{kayit ? 'Hesap Oluştur' : 'Hoş geldin'}</Text>
       <View style={stiller.form}>
         {kayit && <View style={stiller.alan}>
           <Text style={stiller.etiket}>Ad soyad</Text>
@@ -72,34 +77,48 @@ export function AuthFormu({ kayit = false }: { kayit?: boolean }) {
         </View>
         <View style={stiller.alan}>
           <Text style={stiller.etiket}>Şifre</Text>
-          <TextInput accessibilityLabel="Şifre" style={stiller.girdi} value={sifre} onChangeText={sifreAyarla}
+          <SifreAlani accessibilityLabel="Şifre" value={sifre} onChangeText={sifreAyarla}
+            placeholder={kayit ? 'En az 8 karakter' : undefined} placeholderTextColor="#999999"
             editable={!bekliyor} secureTextEntry autoComplete={kayit ? 'new-password' : 'current-password'}
             textContentType={kayit ? 'newPassword' : 'password'} autoCapitalize="none" autoCorrect={false}
-            returnKeyType="go" onSubmitEditing={() => void gonder()} />
-          {kayit && <Text style={stiller.ipucu}>En az 8 karakter.</Text>}
+            returnKeyType={kayit ? 'next' : 'go'} onSubmitEditing={kayit ? undefined : () => void gonder()} />
         </View>
+        {kayit && <View style={stiller.alan}>
+          <Text style={stiller.etiket}>Şifre Tekrar</Text>
+          <SifreAlani accessibilityLabel="Şifre Tekrar" value={sifreTekrar} onChangeText={sifreTekrarAyarla}
+            style={stiller.girdi} editable={!bekliyor} secureTextEntry autoComplete="new-password"
+            textContentType="newPassword" autoCapitalize="none" autoCorrect={false}
+            onSubmitEditing={() => void gonder()} returnKeyType="go" />
+        </View>}
         {hata && <Text accessibilityRole="alert" accessibilityLiveRegion="polite" style={stiller.hata}>{hata}</Text>}
-        <Dugme baslik={kayit ? 'Kayıt ol' : 'Giriş yap'} bekliyor={bekliyor} tiklaninca={() => void gonder()} />
+        <Dugme baslik={kayit ? 'Kayıt Ol' : 'Giriş Yap'} bekliyor={bekliyor} tiklaninca={() => void gonder()} />
       </View>
-      {!bekliyor && <>
-        <Link href={kayit ? '/giris' : '/kayit'} replace style={stiller.baglanti}>
-          {kayit ? 'Hesabın var mı? Giriş yap' : 'Hesabın yok mu? Kayıt ol'}
-        </Link>
-        <Link href="/" replace style={stiller.baglanti}>Başlangıca dön</Link>
-      </>}
+      {!bekliyor && <View style={stiller.altBaglantilar}>
+        <View style={stiller.hesapSatiri}>
+          <Text style={stiller.hesapSorusu}>{kayit ? 'Zaten hesabın var mı?' : 'Hesabın yok mu?'}</Text>
+          <Link href={kayit ? '/giris' : '/kayit'} replace style={stiller.baglanti}>
+            {kayit ? 'Giriş Yap' : 'Kayıt Ol'}
+          </Link>
+        </View>
+        <Link href="/" replace style={stiller.geriBaglantisi} accessibilityLabel="Başlangıca dön">‹  Başlangıca dön</Link>
+      </View>}
     </Sayfa>
   );
 }
 
 const stiller = StyleSheet.create({
-  marka: { color: RENKLER.ikincil, letterSpacing: 1, fontSize: 15 },
-  baslik: { color: RENKLER.yazi, fontSize: 30, fontWeight: '700' },
+  marka: { color: RENKLER.anaKoyu, fontSize: 30, fontWeight: '700', textAlign: 'center' },
+  baslik: { color: RENKLER.yazi, fontSize: 22, fontWeight: '600' },
   aciklama: { color: RENKLER.ikincil, fontSize: 16, lineHeight: 25 },
-  form: { backgroundColor: '#FFFFFF', padding: 22, borderRadius: 24, gap: 18 },
+  form: { backgroundColor: RENKLER.yuzey, borderWidth: 1, borderColor: RENKLER.kenar, padding: 20, borderRadius: 20, gap: 18 },
   alan: { gap: 8 },
   etiket: { color: RENKLER.yazi, fontWeight: '600', fontSize: 14 },
-  girdi: { minHeight: 48, borderWidth: 1, borderColor: '#D4CDDD', borderRadius: 12, padding: 12, color: RENKLER.yazi, fontSize: 16, backgroundColor: '#FCFAFD' },
-  ipucu: { color: RENKLER.ikincil, fontSize: 12 },
-  hata: { color: '#9F303B', fontSize: 14, lineHeight: 22 },
-  baglanti: { color: RENKLER.yazi, paddingVertical: 10, textAlign: 'center', fontSize: 15, textDecorationLine: 'underline' },
+  girdi: ORTAK.girdi,
+  hata: { color: RENKLER.tehlike, fontSize: 14, lineHeight: 22 },
+  altBaglantilar: { alignItems: 'center', gap: 8 },
+  hesapSatiri: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', columnGap: 4 },
+  hesapSorusu: { color: RENKLER.ikincil, fontSize: 14 },
+  baglanti: { color: RENKLER.anaKoyu, minHeight: 44, paddingVertical: 12, paddingHorizontal: 6, textAlign: 'center', fontSize: 15, fontWeight: '600' },
+  geriBaglantisi: { color: RENKLER.ikincil, backgroundColor: RENKLER.yumusak, borderRadius: 18, overflow: 'hidden',
+    minHeight: 44, paddingVertical: 12, paddingHorizontal: 18, textAlign: 'center', fontSize: 14 },
 });

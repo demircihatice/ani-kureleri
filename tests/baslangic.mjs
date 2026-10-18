@@ -108,7 +108,8 @@ try {
   await db.exec('alter table public.sphere_sets drop constraint test_hata');
   await sorgu('update auth.users set email_confirmed_at=now() where id=$1', [kimlik(7)]);
   await adet(7, true);
-  await db.exec(await oku('asama4_kontrol.sql'));
+  // Silinmiş panel yardımcı dosyasına bağlı kalmadan iki başlangıç trigger'ını denetle.
+  kontrol((await sorgu("select count(*)::int as n from pg_trigger where tgname in ('ani_kureleri_dogrulanmis_kayit','ani_kureleri_eposta_dogrulandi')")).rows[0].n === 2);
 
   // Mevcut yinelenen setler varsa migration hiçbirini silmeden durmalıdır.
   await db.exec('drop index public.sphere_sets_user_id_unique_idx');

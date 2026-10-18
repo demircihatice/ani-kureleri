@@ -11,7 +11,7 @@ function Ekranlar() {
   const { oturum, yukleniyor, hata, tekrarDene } = useOturum();
   if (yukleniyor || hata) return (
     <Sayfa>
-      <Text style={{ color: RENKLER.yazi, textAlign: 'center', fontSize: 32, fontWeight: '700' }}>Anı Küreleri</Text>
+      <Text style={{ color: RENKLER.yazi, textAlign: 'center', fontSize: 32, fontWeight: '700' }}>Anı Küresi</Text>
       {yukleniyor ? <>
         <ActivityIndicator color={RENKLER.yazi} size="large" />
         <Text style={{ textAlign: 'center', color: RENKLER.ikincil }}>Oturum kontrol ediliyor…</Text>
@@ -29,10 +29,15 @@ function Ekranlar() {
         <Stack.Screen name="kayit" />
       </Stack.Protected>
       <Stack.Protected guard={!!oturum}>
-        <Stack.Screen name="ana-sayfa" />
+        <Stack.Screen name="galeri" />
         <Stack.Screen name="yeni-ani" />
+        <Stack.Screen name="ana-sayfa" />
+        <Stack.Screen name="analiz" />
+        <Stack.Screen name="analiz-sonucu" />
+        <Stack.Screen name="duygu-duzenle" />
         <Stack.Screen name="kure/[id]" />
         <Stack.Screen name="ani/[id]" />
+        <Stack.Screen name="fotograf/[id]" />
         <Stack.Screen name="profil" />
       </Stack.Protected>
     </Stack>

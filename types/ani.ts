@@ -1,3 +1,5 @@
+import type { AnalizDurumu } from './analiz';
+
 export interface SecilenFotograf {
   uri: string;
   width: number;
@@ -44,12 +46,13 @@ export interface AniSayfasi {
 
 export interface AniDuzenleme { baslik: string; aciklama: string; tarih: string; kureId: string }
 export interface AniGuncellenen {
-  id: string; title: string; description: string | null; memory_date: string; sphere_id: string;
+  id: string; title: string; description: string | null; memory_date: string; sphere_id: string | null; version?: number;
 }
 export interface AniDetaySatiri extends AniGuncellenen {
   image_url: string;
   memory_images: { id: string; storage_path: string; sort_order: number }[];
 }
 export interface AniDetayi extends AniGuncellenen {
+  analizDurumu?: AnalizDurumu;
   fotograflar: { yol: string; url: string | null }[];
 }
