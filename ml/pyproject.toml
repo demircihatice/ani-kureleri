@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ani-kureleri-ml"
+version = "0.1.0"
+description = "Anı Küreleri: bağımsız 7 sınıflı görüntü işleme altyapısı"
+requires-python = ">=3.12,<3.15"
+dependencies = [
+  "torch==2.11.0",
+  "torchvision==0.26.0",
+  "Pillow>=12,<13",
+  "numpy>=2.4,<3",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=9,<10"]
+mat = ["scipy>=1.17,<2"]
+
+[project.scripts]
+ani-ml-audit = "ani_kureleri_ml.dataset_audit:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-ra"

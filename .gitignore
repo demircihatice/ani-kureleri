@@ -53,6 +53,25 @@ backend/pytest-cache-files-*/
 backend/*.egg-info/
 backend/build/
 
+# Bağımsız ML ortamı, veri ve ağırlıklar
+ml/.venv/
+ml/.pytest_cache/
+ml/*.egg-info/
+ml/src/*.egg-info/
+ml/build/
+ml/data/*
+!ml/data/.gitkeep
+ml/artifacts/*
+!ml/artifacts/.gitkeep
+*.pt
+*.pth
+*.ckpt
+**/Annotations.mat
+/data/raw/
+/data/emotic/
+checkpoints/
+runs/
+
 # IDE
 .idea/
 .vs/
