@@ -14,7 +14,7 @@ Hedeflenen akışta kullanıcı mobil uygulamadan fotoğraf/anı ekler. Fotoğra
 | Makine öğrenmesi | Python, PyTorch, Transfer Learning, EMOTIC dataset entegrasyon altyapısı |
 | Planlanan donanım | ESP32, NFC, RGB LED |
 
-Backend, FastAPI üzerinden bağımsız geliştiriliyor ve veritabanı katmanında PostgreSQL hedefleniyor. Mevcut geçiş sürümünde Supabase Auth/JWKS ve Storage uyumluluğu bulunuyor.
+Backend, FastAPI üzerinden bağımsız geliştiriliyor ve veritabanı katmanında PostgreSQL hedefleniyor. Projede geçmiş Supabase migration dosyaları korunmaktadır; temel backend ve kimlik doğrulama mimarisi FastAPI, JWT ve PostgreSQL üzerine geliştirilmektedir.
 
 ## Duygu sınıfları
 
